@@ -1,4 +1,6 @@
-# chatetan_duit
+# Chatetan
+
+Aplikasi android untuk mencatat pengeluaran dan pemasukan pribadi
 
 A new Flutter project.
 
