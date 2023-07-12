@@ -1,18 +1,16 @@
-class Jurnal {
+class Tagihan {
   int? id;
-  String? tipe;
-  int? jumlah;
   String? deskripsi;
+  int? peringatan;
+  int? jumlah;
   String? tanggal;
-  int? anggaranid;
 
-  Jurnal({
+  Tagihan({
     this.id,
-    this.tipe,
-    this.jumlah,
     this.deskripsi,
+    this.peringatan,
+    this.jumlah,
     this.tanggal,
-    this.anggaranid,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,20 +18,18 @@ class Jurnal {
     if (id != null) {
       map['id'] = id;
     }
-    map['tipe'] = tipe;
-    map['jumlah'] = jumlah;
     map['deskripsi'] = deskripsi;
+    map['peringatan'] = peringatan;
+    map['jumlah'] = jumlah;
     map['tanggal'] = tanggal;
-    map['anggaranid'] = anggaranid;
     return map;
   }
 
-  Jurnal.fromMap(Map<String, dynamic> map) {
+  Tagihan.fromMap(Map<String, dynamic> map) {
     this.id = map['id'];
-    this.tipe = map['tipe'];
-    this.jumlah = map['jumlah'];
     this.deskripsi = map['deskripsi'];
+    this.peringatan = map['peringatan'];
+    this.jumlah = map['jumlah'];
     this.tanggal = map['tanggal'];
-    this.anggaranid = map['anggaranid'];
   }
 }

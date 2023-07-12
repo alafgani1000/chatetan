@@ -1,6 +1,8 @@
 import 'package:chatetan_duit/database/db_profile.dart';
 import 'package:chatetan_duit/model/profil.dart';
 import 'package:chatetan_duit/screen/jurnal_data.dart';
+import 'package:chatetan_duit/screen/home_page.dart';
+import 'package:chatetan_duit/screen/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -37,7 +39,7 @@ class _ProfileFormState extends State<ProfileForm> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return const JurnalData(title: 'Chatetan');
+          return const RootPage();
         },
       ),
     );
@@ -64,7 +66,7 @@ class _ProfileFormState extends State<ProfileForm> {
                 labelText: 'Name',
                 labelStyle: const TextStyle(color: Colors.black),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(20),
                   borderSide: const BorderSide(
                     color: Color.fromARGB(243, 124, 109, 123),
                   ),
@@ -77,20 +79,25 @@ class _ProfileFormState extends State<ProfileForm> {
               ),
             ),
             const SizedBox(
-              height: 5,
+              height: 10,
             ),
-            ElevatedButton.icon(
-              icon: const Icon(
-                Icons.save,
-              ),
+            ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(243, 8, 104, 77),
-                minimumSize: const Size.fromHeight(40),
-              ),
+                  primary: Color.fromARGB(243, 13, 152, 159),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  shadowColor: Colors.black,
+                  minimumSize: const Size.fromHeight(40)),
               onPressed: () {
                 save();
               },
-              label: const Text('Simpan'),
+              child: Text(
+                'Simpan',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             )
           ],
         ),

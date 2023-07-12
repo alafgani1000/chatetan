@@ -1,7 +1,9 @@
 import 'package:chatetan_duit/database/db_profile.dart';
 import 'package:chatetan_duit/model/profil.dart';
+import 'package:chatetan_duit/screen/home_page.dart';
 import 'package:chatetan_duit/screen/jurnal_data.dart';
 import 'package:chatetan_duit/screen/profil_form.dart';
+import 'package:chatetan_duit/screen/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,7 +51,7 @@ class _MyAppState extends State<MyApp> {
               child: CircularProgressIndicator(),
             )
           : name != null
-              ? JurnalData(title: 'Chatetan')
+              ? RootPage()
               : const ProfileForm(),
       theme: ThemeData(
         floatingActionButtonTheme: FloatingActionButtonThemeData(
