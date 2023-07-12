@@ -55,7 +55,6 @@ class _JurnalDataState extends State<JurnalData> {
 
   Future<void> _getDataSummary() async {
     var list = await dbProfile.getSummaryJurnal();
-    print(list);
     setState(() {
       summaryData = list;
     });
