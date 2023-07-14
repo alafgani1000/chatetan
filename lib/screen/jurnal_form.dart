@@ -60,7 +60,7 @@ class _JurnalFormState extends State<JurnalForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(243, 8, 104, 77),
+        backgroundColor: Color.fromARGB(183, 6, 141, 150),
         title: Text('Catet'),
       ),
       body: Form(

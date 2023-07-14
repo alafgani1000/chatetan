@@ -1,3 +1,4 @@
+import 'package:chatetan_duit/screen/anggaran_page.dart';
 import 'package:chatetan_duit/screen/jurnal_data.dart';
 import 'package:flutter/material.dart';
 import 'package:chatetan_duit/screen/home_page.dart';
@@ -14,7 +15,7 @@ class _RootPageState extends State<RootPage> {
   List<Widget> pages = const [
     HomePage(),
     JurnalData(title: 'Jurnal'),
-    JurnalData(title: 'Jurnal'),
+    AnggaranPage(title: 'Anggaran'),
     JurnalData(title: 'Jurnal'),
   ];
   @override

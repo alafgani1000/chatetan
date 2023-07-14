@@ -1,6 +1,7 @@
 import 'package:chatetan_duit/database/db_profile.dart';
 import 'package:chatetan_duit/model/anggaran.dart';
 import 'package:chatetan_duit/model/profil.dart';
+import 'package:chatetan_duit/screen/anggaran_form_add.dart';
 import 'package:flutter/material.dart';
 
 class AnggaranPage extends StatefulWidget {
@@ -42,7 +43,35 @@ class _AnggaranPageState extends State<AnggaranPage> {
     });
   }
 
+  // membuka halaman tambah Kontak
+  Future<void> _openFormCreate() async {
+    var result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AnggaranFormAdd()));
+    if (result == 'save') {}
+  }
+
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: Color.fromARGB(243, 211, 233, 229),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(183, 6, 141, 150),
+        title: Text(widget.title),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _openFormCreate();
+        },
+        tooltip: 'Add',
+        child: const Icon(
+          Icons.add,
+          size: 20,
+        ),
+      ),
+    );
   }
 }

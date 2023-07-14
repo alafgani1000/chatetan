@@ -1,3 +1,4 @@
+import 'package:chatetan_duit/widgets/header.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +13,26 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Text('Home Page'),
+        color: Color.fromARGB(66, 247, 249, 247),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                header(
+                  name: 'Hai, Ghani',
+                )
+              ],
+            ),
+            Expanded(
+              child: CustomScrollView(
+                primary: false,
+                slivers: [],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

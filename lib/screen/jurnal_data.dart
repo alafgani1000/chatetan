@@ -121,7 +121,7 @@ class _JurnalDataState extends State<JurnalData> {
     return Scaffold(
       backgroundColor: Color.fromARGB(243, 211, 233, 229),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(243, 8, 104, 77),
+        backgroundColor: Color.fromARGB(183, 6, 141, 150),
         title: Text(widget.title),
       ),
       body: Column(

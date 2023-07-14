@@ -69,6 +69,7 @@ class DbProfile {
         "$columnJumlah INTEGER,"
         "$columnDeskripsi TEXT,"
         "$columnTanggal DATE,"
+        "$columnAnggaranId INTEGER,"
         "FOREIGN KEY ($columnAnggaranId) REFERENCES $tableNameAnggaran($columnId))";
 
     var sqlAnggaran =
@@ -77,7 +78,7 @@ class DbProfile {
         "$columnAnggTahun INTEGER,"
         "$columnAnggJumlah INTEGER,"
         "$columnAnggDate DATE,"
-        "$columnAnggJumlahPakai INTEGER)";
+        "$columnAnggJumlahPakai INTEGER DEFAULT 0)";
 
     var sqlTagihan =
         "CREATE TABLE $tableNameTagihan($columnId INTEGER PRIMARY KEY,"
