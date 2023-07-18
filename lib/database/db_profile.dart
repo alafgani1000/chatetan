@@ -162,6 +162,28 @@ class DbProfile {
     return currData;
   }
 
+  // get data jurnal
+  Future<List?> getAnggaran() async {
+    var dt = DateTime.now();
+    int tahun = dt.year;
+    int bulan = dt.month;
+    var dbClient = await _db;
+    var result = await dbClient!.query(
+      tableNameAnggaran,
+      columns: [
+        columnId,
+        columnAnggBulan,
+        columnAnggTahun,
+        columnAnggJumlah,
+        columnAnggDate,
+        columnAnggJumlahPakai
+      ],
+      where: '$columnAnggBulan = ? and $columnAnggTahun = ?',
+      whereArgs: [bulan, tahun],
+    );
+    return result.toList();
+  }
+
   // get data tagihan
   Future<List?> getAllTagihan() async {
     var dbClient = await _db;
@@ -170,7 +192,7 @@ class DbProfile {
       columnTagihDeskripsi,
       columnTagihJumlah,
       columnTagihPeringatan,
-      columnTagihPeringatan
+      columnTagihPeringatan,
     ]);
     return result.toList();
   }

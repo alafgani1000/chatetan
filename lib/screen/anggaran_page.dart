@@ -3,6 +3,7 @@ import 'package:chatetan_duit/model/anggaran.dart';
 import 'package:chatetan_duit/model/profil.dart';
 import 'package:chatetan_duit/screen/anggaran_form_add.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AnggaranPage extends StatefulWidget {
   const AnggaranPage({Key? key, required this.title}) : super(key: key);
@@ -14,13 +15,29 @@ class AnggaranPage extends StatefulWidget {
 
 class _AnggaranPageState extends State<AnggaranPage> {
   List<Profil> profile = [];
-  List<Anggaran> anaggaran = [];
+  List<Anggaran> anggaranData = [];
   DbProfile dbProfile = DbProfile();
   int jumlah = 0;
   int jumlahp = 0;
 
+  List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+
   @override
   void initState() {
+    _getAnggaran();
     super.initState();
   }
 
@@ -34,13 +51,24 @@ class _AnggaranPageState extends State<AnggaranPage> {
     });
   }
 
-  Future<void> _getAnggaran() async {
+  Future<void> get_a() async {
     var curJumlah = await dbProfile.getCurrAnggJumlah();
     var curJumlahp = await dbProfile.getCurrAnggJump();
     setState(() {
       jumlah = curJumlah;
       jumlahp = curJumlahp;
     });
+  }
+
+  Future<void> _getAnggaran() async {
+    var list = await dbProfile.getAnggaran();
+    setState(() {
+      anggaranData.clear();
+      list!.forEach((anggaran) {
+        anggaranData.add(Anggaran.fromMap(anggaran));
+      });
+    });
+    print('test');
   }
 
   // membuka halaman tambah Kontak
@@ -60,7 +88,56 @@ class _AnggaranPageState extends State<AnggaranPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [],
+        children: [
+          const SizedBox(
+            height: 1,
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: anggaranData.length,
+            itemBuilder: (context, index) {
+              Anggaran anggaran = anggaranData[index];
+              return Container(
+                margin: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.loyalty,
+                    color: Color.fromARGB(255, 9, 203, 55),
+                    size: 30,
+                  ),
+                  title: Text(
+                    'Anggaran bulan ${months.elementAt(anggaran.bulan! - 1)}',
+                    style: const TextStyle(
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Anggaran : ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2).format(anggaran.jumlah)},',
+                      ),
+                      Text(
+                        'Terpakai : ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2).format(anggaran.jumlah)},',
+                      ),
+                      Text(
+                        'Sisa : ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2).format(anggaran.jumlah)},',
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

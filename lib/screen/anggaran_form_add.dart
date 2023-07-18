@@ -1,5 +1,8 @@
+import 'package:chatetan_duit/database/db_profile.dart';
 import 'package:chatetan_duit/model/anggaran.dart';
+import 'package:chatetan_duit/model/jurnal.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AnggaranFormAdd extends StatefulWidget {
   const AnggaranFormAdd({Key? key, this.anggaran}) : super(key: key);
@@ -10,7 +13,9 @@ class AnggaranFormAdd extends StatefulWidget {
 }
 
 class _AnggaranFormAddState extends State<AnggaranFormAdd> {
+  DbProfile dbProfile = DbProfile();
   TextEditingController? jumlah;
+  String anggaranCheck = '';
 
   @override
   void initState() {
@@ -25,7 +30,22 @@ class _AnggaranFormAddState extends State<AnggaranFormAdd> {
     var currDate = DateTime.now();
     int tahun = currDate.year;
     int bulan = currDate.month;
-    print(bulan);
+    String date = DateFormat('yyyy-MM-dd').format(currDate);
+    var check = await dbProfile.getCurrAnggJumlah();
+    if (check == null) {
+      await dbProfile.saveAnggaran(
+        Anggaran(
+            bulan: bulan,
+            tahun: tahun,
+            jumlah: int.parse(jumlah!.text),
+            tanggal: date,
+            jumlahpakai: 0),
+      );
+    } else {
+      setState(() {
+        anggaranCheck = 'Anggaran bulan ini sudah di input';
+      });
+    }
   }
 
   final _formkey = GlobalKey<FormState>();
@@ -41,6 +61,26 @@ class _AnggaranFormAddState extends State<AnggaranFormAdd> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 8.0,
+                right: 8.0,
+                top: 8.0,
+                bottom: 8,
+              ),
+              child: Text(
+                anggaranCheck,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.redAccent,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+              height: 20,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -68,7 +108,7 @@ class _AnggaranFormAddState extends State<AnggaranFormAdd> {
                     ),
                   ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(),
+                keyboardType: TextInputType.number,
               ),
             ),
             Padding(

@@ -28,7 +28,7 @@ class Anggaran {
     return map;
   }
 
-  Anggaran.fromMao(Map<String, dynamic> map) {
+  Anggaran.fromMap(Map<String, dynamic> map) {
     this.id = map['id'];
     this.bulan = map['bulan'];
     this.tahun = map['tahun'];
