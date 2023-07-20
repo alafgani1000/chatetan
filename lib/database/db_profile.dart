@@ -19,7 +19,7 @@ class DbProfile {
   final String columnId = 'id';
   final String columnName = 'name';
   // table jurnal
-  final String tableNameJurnal = 'tabelJurnal';
+  final String tableNameJurnal = 'Pemasukan';
   final String columnTipe = 'tipe';
   final String columnJumlah = 'jumlah';
   final String columnDeskripsi = 'deskripsi';
@@ -38,6 +38,23 @@ class DbProfile {
   final String columnTagihDeskripsi = 'deskripsi';
   final String columnTagihPeringatan = 'peringatan';
   final String columnTagihJumlah = 'jumlah';
+  // table pemasukan
+  final String tableNamePemasukan = 'tablePemasukan';
+  final String columnMasukJumlah = 'jumlah';
+  final String columnMasukDeskripsi = 'deskripsi';
+  final String columnMasukTanggal = 'tanggal';
+  // table pengeluaran
+  final String tableNamePengeluaran = 'tablePengeluaran';
+  final String columnKeluarJumlah = 'jumlah';
+  final String columnKeluarDeskripsi = 'deskripsi';
+  final String columnKeluarTanggal = 'tanggal';
+  // table investasi
+  final String tableNameInvestasi = 'tableInvestasi';
+  final String columnInvestPlatfom = 'platfom';
+  final String columnInvestJumlah = 'jumlah';
+  final String columnInvestPeriodeBagi = 'periodebagi';
+  final String columnInvestTanggal = 'tanggal';
+  final String columnInvestDeskripsi = 'deskripsi';
 
   DbProfile._internal();
   factory DbProfile() => _instance;
@@ -87,10 +104,35 @@ class DbProfile {
         "$columnTagihJumlah INTEGER,"
         "$columnTagihTanggal INTEGER)";
 
+    var sqlPemasukan =
+        "CREATE TABLE $tableNamePemasukan($columnId INTEGER PRIMARY KEY,"
+        "$columnMasukJumlah INTEGER,"
+        "$columnMasukDeskripsi TEXT,"
+        "$columnMasukTanggal DATE"
+        ")";
+
+    var sqlPengeluaran =
+        "CREATE TABLE $tableNamePengeluaran($columnId INTEGER PRIMARY KEY,"
+        "$columnKeluarJumlah INTEGER,"
+        "$columnKeluarDeskripsi TEXT,"
+        "$columnKeluarTanggal DATE,"
+        "FOREIGN KEY ($columnAnggaranId) REFERENCES $tableNameAnggaran($columnId))";
+
+    var sqlInvestasi =
+        "CREATE TABLE $tableNameInvestasi($columnId INTEGER PRIMARY KEY,"
+        "$columnInvestPlatfom TEXT,"
+        "$columnInvestJumlah INTEGER,"
+        "$columnInvestPeriodeBagi TEXT,"
+        "$columnInvestDeskripsi TEXT,"
+        "$columnInvestTanggal DATE)";
+
     await db.execute(sqlJurnal);
     await db.execute(sql);
     await db.execute(sqlAnggaran);
     await db.execute(sqlTagihan);
+    await db.execute(sqlPemasukan);
+    await db.execute(sqlPengeluaran);
+    await db.execute(sqlInvestasi);
   }
 
   //insert ke databse
@@ -149,6 +191,18 @@ class DbProfile {
         'SELECT jumlah FROM $tableNameAnggaran WHERE bulan=? and tahun=?',
         [bulan, tahun]));
     return currData;
+  }
+
+  // get id anggaran
+  Future<dynamic> getIdAnggaran() async {
+    var dt = DateTime.now();
+    int tahun = dt.year;
+    int bulan = dt.month;
+    var dbClient = await _db;
+    var curId = Sqflite.firstIntValue(await dbClient!.rawQuery(
+        'SELECT $columnId FROM $tableNameAnggaran WHERE bulan=? and tahun=?',
+        [bulan, tahun]));
+    return curId;
   }
 
   Future<dynamic> getCurrAnggJump() async {

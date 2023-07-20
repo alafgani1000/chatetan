@@ -98,6 +98,7 @@ class _AnggaranPageState extends State<AnggaranPage> {
             itemBuilder: (context, index) {
               Anggaran anggaran = anggaranData[index];
               return Container(
+                padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.all(10),
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -107,9 +108,9 @@ class _AnggaranPageState extends State<AnggaranPage> {
                 ),
                 child: ListTile(
                   leading: const Icon(
-                    Icons.loyalty,
-                    color: Color.fromARGB(255, 9, 203, 55),
-                    size: 30,
+                    Icons.account_balance_wallet,
+                    color: Color.fromARGB(255, 176, 189, 179),
+                    size: 40,
                   ),
                   title: Text(
                     'Anggaran bulan ${months.elementAt(anggaran.bulan! - 1)}',
@@ -122,15 +123,57 @@ class _AnggaranPageState extends State<AnggaranPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Anggaran : ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2).format(anggaran.jumlah)},',
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const Text(
+                        'Anggaran',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                       Text(
-                        'Terpakai : ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2).format(anggaran.jumlah)},',
+                        NumberFormat.currency(
+                          locale: 'id',
+                          symbol: 'Rp ',
+                          decimalDigits: 2,
+                        ).format(anggaran.jumlah),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const Text(
+                        'Pengeluaran',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                       Text(
-                        'Sisa : ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 2).format(anggaran.jumlah)},',
+                        NumberFormat.currency(
+                          locale: 'id',
+                          symbol: 'Rp ',
+                          decimalDigits: 2,
+                        ).format(anggaran.jumlahpakai),
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const Text(
+                        'Sisa',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'id',
+                          symbol: 'Rp ',
+                          decimalDigits: 2,
+                        ).format(anggaran.jumlah! - anggaran.jumlahpakai!),
+                      )
                     ],
                   ),
                 ),

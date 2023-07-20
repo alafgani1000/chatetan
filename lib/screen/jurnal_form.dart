@@ -1,4 +1,5 @@
 import 'package:chatetan_duit/database/db_profile.dart';
+import 'package:chatetan_duit/model/anggaran.dart';
 import 'package:chatetan_duit/model/jurnal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +10,9 @@ import 'package:intl/intl.dart';
 enum tipePilihan { pemasukan, pengeluaran }
 
 class JurnalForm extends StatefulWidget {
-  const JurnalForm({Key? key, this.jurnal}) : super(key: key);
+  const JurnalForm({Key? key, this.jurnal, this.anggaran}) : super(key: key);
   final Jurnal? jurnal;
+  final Anggaran? anggaran;
 
   @override
   State<JurnalForm> createState() => _JurnalFormState();
@@ -43,13 +45,21 @@ class _JurnalFormState extends State<JurnalForm> {
     } else {
       tipeData = 'pengeluaran';
     }
+    int anggaranId = await dbProfile.getIdAnggaran();
+    int jumlahPakai = await dbProfile.getCurrAnggJump();
+    int newJp = jumlahPakai + int.parse(jumlah!.text);
     await dbProfile.saveJurnal(
       Jurnal(
         deskripsi: deskripsi!.text,
         jumlah: int.parse(jumlah!.text),
         tanggal: tanggal!.text,
         tipe: tipeData,
+        anggaranid: anggaranId,
       ),
+    );
+    // update anggaran
+    await dbProfile.updateAnggaran(
+      Anggaran(jumlahpakai: newJp, id: anggaranId),
     );
     Navigator.pop(context, 'save');
   }
