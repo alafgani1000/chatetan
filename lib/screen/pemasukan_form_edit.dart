@@ -1,24 +1,40 @@
+import 'package:chatetan_duit/model/pemasukan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
 import '../database/db_profile.dart';
 import '../model/jurnal.dart';
 
-enum tipePilihan { pemasukan, pengeluaran }
-
-class JurnalFormEdit extends StatefulWidget {
-  const JurnalFormEdit({Key? key, this.jurnal}) : super(key: key);
-  final Jurnal? jurnal;
+class PemasukanFormEdit extends StatefulWidget {
+  const PemasukanFormEdit({Key? key, this.pemasukan}) : super(key: key);
+  final Pemasukan? pemasukan;
 
   @override
-  State<JurnalFormEdit> createState() => _JurnalFormEditState();
+  State<PemasukanFormEdit> createState() => _PemasukanFormEditState();
 }
 
-class _JurnalFormEditState extends State<JurnalFormEdit> {
+class CurrencyPtBrInputFormatter extends TextInputFormatter {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    double value = double.parse(newValue.text);
+    final formatter = NumberFormat.currency(
+      locale: 'id',
+      symbol: '',
+    );
+    String newText = formatter.format(value / 100);
+
+    return newValue.copyWith(
+        text: newText,
+        selection: new TextSelection.collapsed(offset: newText.length));
+  }
+}
+
+class _PemasukanFormEditState extends State<PemasukanFormEdit> {
   DbProfile dbProfile = DbProfile();
-  tipePilihan? _tipe = tipePilihan.pemasukan;
 
   TextEditingController? deskripsi;
   TextEditingController? jumlah;
@@ -27,32 +43,26 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
   @override
   void initState() {
     // TODO: implement initState
+    final formater = NumberFormat.currency(symbol: "", locale: "id");
+    double jumlahEdit = double.parse(widget.pemasukan!.jumlah.toString());
     deskripsi = TextEditingController(
-        text: widget.jurnal == null ? '' : widget.jurnal!.deskripsi);
+        text: widget.pemasukan == null ? '' : widget.pemasukan!.deskripsi);
     jumlah = TextEditingController(
-        text: widget.jurnal == null ? '' : widget.jurnal!.jumlah.toString());
+        text: widget.pemasukan == null ? '' : formater.format(jumlahEdit));
     tanggal = TextEditingController(
-        text: widget.jurnal == null ? '' : widget.jurnal!.tanggal);
-    widget.jurnal!.tipe == 'pemasukan'
-        ? _tipe = tipePilihan.pemasukan
-        : _tipe = tipePilihan.pengeluaran;
+        text: widget.pemasukan == null ? '' : widget.pemasukan!.tanggal);
     super.initState();
   }
 
-  Future<void> upsertJurnal() async {
-    String tipeData = '';
-    if (_tipe == tipePilihan.pemasukan) {
-      tipeData = 'pemasukan';
-    } else {
-      tipeData = 'pengeluaran';
-    }
-    await dbProfile.updateJurnal(
-      Jurnal(
+  Future<void> upsertPemasukan() async {
+    List<String> jumlahList = jumlah!.text.toString().split(",");
+    String jumlahString = jumlahList[0].toString().replaceAll(".", "");
+    await dbProfile.updatePemasukan(
+      Pemasukan(
         deskripsi: deskripsi!.text,
-        jumlah: int.parse(jumlah!.text),
+        jumlah: int.parse(jumlahString),
         tanggal: tanggal!.text,
-        tipe: tipeData,
-        id: widget.jurnal!.id,
+        id: widget.pemasukan!.id,
       ),
     );
     Navigator.pop(context, 'edit');
@@ -63,8 +73,8 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(243, 8, 104, 77),
-        title: Text('Catet'),
+        backgroundColor: Color.fromARGB(183, 6, 141, 150),
+        title: Text('Edit Pemasukan'),
       ),
       body: Form(
         key: _formKey,
@@ -125,7 +135,11 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
                     ),
                   ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CurrencyPtBrInputFormatter(),
+                ],
               ),
             ),
             Padding(
@@ -180,43 +194,22 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
                 },
               ),
             ),
-            ListTile(
-              title: const Text('Pemasukan'),
-              leading: Radio<tipePilihan>(
-                value: tipePilihan.pemasukan,
-                groupValue: _tipe,
-                onChanged: (tipePilihan? value) {
-                  setState(() {
-                    _tipe = value;
-                  });
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(183, 6, 141, 150),
+                  minimumSize: const Size.fromHeight(50),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    upsertPemasukan();
+                  }
                 },
-              ),
-            ),
-            ListTile(
-              title: const Text('Pengeluaran'),
-              leading: Radio<tipePilihan>(
-                value: tipePilihan.pengeluaran,
-                groupValue: _tipe,
-                onChanged: (tipePilihan? value) {
-                  setState(() {
-                    _tipe = value;
-                  });
-                },
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(183, 2, 101, 65),
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  upsertJurnal();
-                }
-              },
-              child: const Text(
-                'Ubah',
-                style: TextStyle(fontSize: 16),
+                child: const Text(
+                  'Ubah',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             )
           ],

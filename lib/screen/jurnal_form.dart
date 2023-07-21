@@ -59,7 +59,10 @@ class _JurnalFormState extends State<JurnalForm> {
     );
     // update anggaran
     await dbProfile.updateAnggaran(
-      Anggaran(jumlahpakai: newJp, id: anggaranId),
+      Anggaran(
+        jumlahpakai: newJp,
+        id: anggaranId,
+      ),
     );
     Navigator.pop(context, 'save');
   }

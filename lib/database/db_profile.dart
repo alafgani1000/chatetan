@@ -1,6 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:chatetan_duit/model/anggaran.dart';
+import 'package:chatetan_duit/model/investasi.dart';
+import 'package:chatetan_duit/model/pemasukan.dart';
+import 'package:chatetan_duit/model/pengeluaran.dart';
 import 'package:chatetan_duit/model/profil.dart';
 import 'package:chatetan_duit/model/tagihan.dart';
 import 'package:sqflite/sqflite.dart';
@@ -116,6 +119,7 @@ class DbProfile {
         "$columnKeluarJumlah INTEGER,"
         "$columnKeluarDeskripsi TEXT,"
         "$columnKeluarTanggal DATE,"
+        "$columnAnggaranId INTEGER,"
         "FOREIGN KEY ($columnAnggaranId) REFERENCES $tableNameAnggaran($columnId))";
 
     var sqlInvestasi =
@@ -166,6 +170,24 @@ class DbProfile {
   Future<int?> saveTagihan(Tagihan tagihan) async {
     var dbClient = await _db;
     return await dbClient!.insert(tableNameTagihan, tagihan.toMap());
+  }
+
+  // save pemasukan
+  Future<int?> savePemasukan(Pemasukan pemasukan) async {
+    var dbClient = await _db;
+    return await dbClient!.insert(tableNamePemasukan, pemasukan.toMap());
+  }
+
+  // save pengeluaran
+  Future<int?> savePengeluaran(Pengeluaran pengeluaran) async {
+    var dbClient = await _db;
+    return await dbClient!.insert(tableNamePengeluaran, pengeluaran.toMap());
+  }
+
+  // save investasi
+  Future<int?> saveInvestasi(Investasi investasi) async {
+    var dbClient = await _db;
+    return await dbClient!.insert(tableNameInvestasi, investasi.toMap());
   }
 
   // get data jurnal
@@ -252,6 +274,79 @@ class DbProfile {
   }
 
   // get data pemasukan
+  Future<List?> getPemasukan() async {
+    var dbClient = await _db;
+    var result = await dbClient!.query(tableNamePemasukan, columns: [
+      columnId,
+      columnMasukJumlah,
+      columnMasukDeskripsi,
+      columnMasukTanggal,
+    ]);
+    return result.toList();
+  }
+
+  // get data pengeluaran
+  Future<List?> getPengeluaran() async {
+    var dbClient = await _db;
+    var result = await dbClient!.query(tableNamePengeluaran, columns: [
+      columnId,
+      columnKeluarJumlah,
+      columnKeluarDeskripsi,
+      columnKeluarTanggal,
+      columnAnggaranId,
+    ]);
+    return result.toList();
+  }
+
+  Future<List?> getPengeluaranPerbulan(int idAnggaran) async {
+    var dbClient = await _db;
+    var result = await dbClient!.query(
+      tableNamePengeluaran,
+      columns: [
+        columnId,
+        columnKeluarJumlah,
+        columnKeluarDeskripsi,
+        columnKeluarTanggal,
+        columnAnggaranId,
+      ],
+      where: '$columnAnggaranId = ?',
+      whereArgs: [idAnggaran],
+    );
+    return result.toList();
+  }
+
+  // get data investasi
+  Future<List?> getInvestasi() async {
+    var dbClient = await _db;
+    var result = await dbClient!.query(tableNameInvestasi, columns: [
+      columnId,
+      columnInvestPlatfom,
+      columnInvestJumlah,
+      columnInvestPeriodeBagi,
+      columnInvestDeskripsi,
+      columnInvestTanggal,
+    ]);
+    return result.toList();
+  }
+
+  Future<dynamic> getTotalPemasukan() async {
+    var dbClient = await _db;
+    var total = Sqflite.firstIntValue(await dbClient!
+        .rawQuery('SELECT SUM(jumlah) as total FROM $tableNamePemasukan'));
+    total ??= 0;
+    return total;
+  }
+
+  Future<dynamic> getTotalPengeluaran(int idAnggaran) async {
+    var dbClient = await _db;
+    var total = Sqflite.firstIntValue(await dbClient!.rawQuery(
+        'SELECT SUM(jumlah) as total FROM $tableNamePengeluaran WHERE $columnAnggaranId = ?',
+        [idAnggaran]));
+    total ??= 0;
+    return total;
+  }
+
+  // get data pemasukan
   Future<dynamic> getSummaryJurnal() async {
     var dbClient = await _db;
     var pemasukanSummary = Sqflite.firstIntValue(await dbClient!.rawQuery(
@@ -270,22 +365,67 @@ class DbProfile {
   // update data jurnal
   Future<int?> updateJurnal(Jurnal jurnal) async {
     var dbClient = await _db;
-    return await dbClient!.update(tableNameJurnal, jurnal.toMap(),
-        where: '$columnId = ?', whereArgs: [jurnal.id]);
+    return await dbClient!.update(
+      tableNameJurnal,
+      jurnal.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [jurnal.id],
+    );
   }
 
   // update data anggaran
   Future<int?> updateAnggaran(Anggaran anggaran) async {
     var dbClient = await _db;
-    return await dbClient!.update(tableNameAnggaran, anggaran.toMap(),
-        where: '$columnId = ?', whereArgs: [anggaran.id]);
+    return await dbClient!.update(
+      tableNameAnggaran,
+      anggaran.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [anggaran.id],
+    );
   }
 
   // update data tagihan
   Future<int?> updateTagihan(Tagihan tagihan) async {
     var dbClient = await _db;
-    return await dbClient!.update(tableNameTagihan, tagihan.toMap(),
-        where: '$columnId = ?', whereArgs: [tagihan.id]);
+    return await dbClient!.update(
+      tableNameTagihan,
+      tagihan.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [tagihan.id],
+    );
+  }
+
+  // update data pemasukan
+  Future<int?> updatePemasukan(Pemasukan pemasukan) async {
+    var dbClient = await _db;
+    return await dbClient!.update(
+      tableNamePemasukan,
+      pemasukan.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [pemasukan.id],
+    );
+  }
+
+  // update data pengeluaran
+  Future<int?> updatePengeluaran(Pengeluaran pengeluaran) async {
+    var dbClient = await _db;
+    return await dbClient!.update(
+      tableNamePengeluaran,
+      pengeluaran.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [pengeluaran.id],
+    );
+  }
+
+  // update data investasi
+  Future<int?> updateInvestasi(Investasi investasi) async {
+    var dbClient = await _db;
+    return await dbClient!.update(
+      tableNameInvestasi,
+      investasi.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [investasi.id],
+    );
   }
 
   // delete data
@@ -308,5 +448,26 @@ class DbProfile {
     var dbClient = await _db;
     return await dbClient!
         .delete(tableNameTagihan, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // delete data pemasukan
+  Future<int?> deletePemasukan(int id) async {
+    var dbClient = await _db;
+    return await dbClient!
+        .delete(tableNamePemasukan, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // delete data pengeluaran
+  Future<int?> deletePengeluaran(int id) async {
+    var dbClient = await _db;
+    return await dbClient!
+        .delete(tableNamePengeluaran, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // delete data investasi
+  Future<int?> deleteInvestasi(int id) async {
+    var dbClient = await _db;
+    return await dbClient!
+        .delete(tableNameInvestasi, where: '$columnId = ?', whereArgs: [id]);
   }
 }

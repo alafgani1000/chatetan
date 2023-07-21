@@ -1,5 +1,7 @@
 import 'package:chatetan_duit/screen/anggaran_page.dart';
 import 'package:chatetan_duit/screen/jurnal_data.dart';
+import 'package:chatetan_duit/screen/pemasukan_page.dart';
+import 'package:chatetan_duit/screen/pengeluaran_page.dart';
 import 'package:flutter/material.dart';
 import 'package:chatetan_duit/screen/home_page.dart';
 
@@ -14,7 +16,8 @@ class _RootPageState extends State<RootPage> {
   int currentPage = 0;
   List<Widget> pages = const [
     HomePage(),
-    JurnalData(title: 'Jurnal'),
+    PemasukanPage(title: 'Pemasukan'),
+    PengeluaranPage(title: 'Pengeluaran'),
     AnggaranPage(title: 'Anggaran'),
     JurnalData(title: 'Jurnal'),
   ];
@@ -24,24 +27,51 @@ class _RootPageState extends State<RootPage> {
       body: pages[currentPage],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-            labelTextStyle:
-                MaterialStateProperty.all(TextStyle(fontFamily: 'Roboto'))),
+            labelTextStyle: MaterialStateProperty.all(
+              TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 11.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: Colors.white),
         child: NavigationBar(
+          backgroundColor: Colors.white,
+          height: 60,
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.home),
+              icon: Icon(
+                Icons.home,
+                size: 20,
+              ),
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.book),
-              label: 'Jurnal',
+              icon: Icon(
+                Icons.book,
+                size: 20,
+              ),
+              label: 'Pemasukan',
             ),
             NavigationDestination(
-              icon: Icon(Icons.assignment),
+              icon: Icon(
+                Icons.app_shortcut,
+                size: 20,
+              ),
+              label: 'Pengeluaran',
+            ),
+            NavigationDestination(
+              icon: Icon(
+                Icons.assignment,
+                size: 20,
+              ),
               label: 'Anggaran',
             ),
             NavigationDestination(
-              icon: Icon(Icons.receipt),
+              icon: Icon(
+                Icons.receipt,
+                size: 20,
+              ),
               label: 'Laporan',
             ),
           ],

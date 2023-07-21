@@ -1,70 +1,95 @@
+import 'package:chatetan_duit/database/db_profile.dart';
+import 'package:chatetan_duit/model/anggaran.dart';
+import 'package:chatetan_duit/model/pengeluaran.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import '../database/db_profile.dart';
-import '../model/jurnal.dart';
-
-enum tipePilihan { pemasukan, pengeluaran }
-
-class JurnalFormEdit extends StatefulWidget {
-  const JurnalFormEdit({Key? key, this.jurnal}) : super(key: key);
-  final Jurnal? jurnal;
+class PengeluaranFormAdd extends StatefulWidget {
+  const PengeluaranFormAdd({Key? key, this.pengeluaran, this.anggaran})
+      : super(key: key);
+  final Pengeluaran? pengeluaran;
+  final Anggaran? anggaran;
 
   @override
-  State<JurnalFormEdit> createState() => _JurnalFormEditState();
+  State<PengeluaranFormAdd> createState() => _PengeluaranFormAddState();
 }
 
-class _JurnalFormEditState extends State<JurnalFormEdit> {
+class CurrencyPtBrInputFormatter extends TextInputFormatter {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    double value = double.parse(newValue.text);
+    final formatter = NumberFormat.currency(
+      locale: 'id',
+      symbol: '',
+    );
+    String newText = formatter.format(value / 100);
+
+    return newValue.copyWith(
+        text: newText,
+        selection: new TextSelection.collapsed(offset: newText.length));
+  }
+}
+
+class _PengeluaranFormAddState extends State<PengeluaranFormAdd> {
   DbProfile dbProfile = DbProfile();
-  tipePilihan? _tipe = tipePilihan.pemasukan;
 
   TextEditingController? deskripsi;
   TextEditingController? jumlah;
   TextEditingController? tanggal;
+  String jumlahCurrency = '';
 
   @override
   void initState() {
     // TODO: implement initState
     deskripsi = TextEditingController(
-        text: widget.jurnal == null ? '' : widget.jurnal!.deskripsi);
+        text: widget.pengeluaran == null ? '' : widget.pengeluaran!.deskripsi);
     jumlah = TextEditingController(
-        text: widget.jurnal == null ? '' : widget.jurnal!.jumlah.toString());
+        text: widget.pengeluaran == null
+            ? ''
+            : widget.pengeluaran!.jumlah.toString());
     tanggal = TextEditingController(
-        text: widget.jurnal == null ? '' : widget.jurnal!.tanggal);
-    widget.jurnal!.tipe == 'pemasukan'
-        ? _tipe = tipePilihan.pemasukan
-        : _tipe = tipePilihan.pengeluaran;
+        text: widget.pengeluaran == null ? '' : widget.pengeluaran!.tanggal);
     super.initState();
   }
 
-  Future<void> upsertJurnal() async {
-    String tipeData = '';
-    if (_tipe == tipePilihan.pemasukan) {
-      tipeData = 'pemasukan';
-    } else {
-      tipeData = 'pengeluaran';
-    }
-    await dbProfile.updateJurnal(
-      Jurnal(
+  Future<void> upsertPengeluaran() async {
+    List<String> jumlahList = jumlah!.text.toString().split(",");
+    String jumlahString = jumlahList[0].toString().replaceAll(".", "");
+    int newJp = int.parse(widget.anggaran!.jumlahpakai.toString()) +
+        int.parse(jumlahString);
+    var input = await dbProfile.savePengeluaran(
+      Pengeluaran(
         deskripsi: deskripsi!.text,
-        jumlah: int.parse(jumlah!.text),
+        jumlah: int.parse(jumlahString),
         tanggal: tanggal!.text,
-        tipe: tipeData,
-        id: widget.jurnal!.id,
+        anggaranid: widget.anggaran!.id,
       ),
     );
-    Navigator.pop(context, 'edit');
+    await dbProfile.updateAnggaran(
+      Anggaran(
+        bulan: widget.anggaran!.bulan,
+        tahun: widget.anggaran!.tahun,
+        jumlah: widget.anggaran!.jumlah,
+        jumlahpakai: newJp,
+        id: widget.anggaran!.id,
+      ),
+    );
+    Navigator.pop(context, 'save');
   }
 
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(243, 8, 104, 77),
-        title: Text('Catet'),
+        backgroundColor: Color.fromARGB(183, 6, 141, 150),
+        title: Text('Input Pengeluaran'),
       ),
       body: Form(
         key: _formKey,
@@ -125,7 +150,16 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
                     ),
                   ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CurrencyPtBrInputFormatter(),
+                ],
+                onChanged: (String value) async {
+                  setState(() {
+                    jumlahCurrency = value;
+                  });
+                },
               ),
             ),
             Padding(
@@ -169,10 +203,8 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
-                    print(pickedDate);
                     String formatDate =
                         DateFormat('yyyy-MM-dd').format(pickedDate);
-                    print(formatDate);
                     setState(() {
                       tanggal?.text = formatDate;
                     });
@@ -180,43 +212,22 @@ class _JurnalFormEditState extends State<JurnalFormEdit> {
                 },
               ),
             ),
-            ListTile(
-              title: const Text('Pemasukan'),
-              leading: Radio<tipePilihan>(
-                value: tipePilihan.pemasukan,
-                groupValue: _tipe,
-                onChanged: (tipePilihan? value) {
-                  setState(() {
-                    _tipe = value;
-                  });
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(243, 13, 152, 159),
+                  minimumSize: const Size.fromHeight(50),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    upsertPengeluaran();
+                  }
                 },
-              ),
-            ),
-            ListTile(
-              title: const Text('Pengeluaran'),
-              leading: Radio<tipePilihan>(
-                value: tipePilihan.pengeluaran,
-                groupValue: _tipe,
-                onChanged: (tipePilihan? value) {
-                  setState(() {
-                    _tipe = value;
-                  });
-                },
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(183, 2, 101, 65),
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  upsertJurnal();
-                }
-              },
-              child: const Text(
-                'Ubah',
-                style: TextStyle(fontSize: 16),
+                child: const Text(
+                  'Simpan',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             )
           ],

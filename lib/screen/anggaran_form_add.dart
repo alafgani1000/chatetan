@@ -41,6 +41,7 @@ class _AnggaranFormAddState extends State<AnggaranFormAdd> {
             tanggal: date,
             jumlahpakai: 0),
       );
+      Navigator.pop(context, 'save');
     } else {
       setState(() {
         anggaranCheck = 'Anggaran bulan ini sudah di input';

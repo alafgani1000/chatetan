@@ -75,7 +75,9 @@ class _AnggaranPageState extends State<AnggaranPage> {
   Future<void> _openFormCreate() async {
     var result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => AnggaranFormAdd()));
-    if (result == 'save') {}
+    if (result == 'save') {
+      _getAnggaran();
+    }
   }
 
   Widget build(BuildContext context) {
