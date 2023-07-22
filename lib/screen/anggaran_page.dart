@@ -68,7 +68,6 @@ class _AnggaranPageState extends State<AnggaranPage> {
         anggaranData.add(Anggaran.fromMap(anggaran));
       });
     });
-    print('test');
   }
 
   // membuka halaman tambah Kontak

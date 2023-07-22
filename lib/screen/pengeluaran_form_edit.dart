@@ -49,18 +49,21 @@ class _PengeluaranFormEditState extends State<PengeluaranFormEdit> {
   void initState() {
     // TODO: implement initState
     final formater = NumberFormat.currency(symbol: "", locale: "id");
-    double jumlahEdit = double.parse(widget.pengeluaran!.jumlah.toString());
     deskripsi = TextEditingController(
         text: widget.pengeluaran == null ? '' : widget.pengeluaran!.deskripsi);
     jumlah = TextEditingController(
-        text: widget.pengeluaran == null ? '' : formater.format(jumlahEdit));
+        text: widget.pengeluaran == null
+            ? ''
+            : formater.format(widget.pengeluaran!.jumlah));
     tanggal = TextEditingController(
         text: widget.pengeluaran == null ? '' : widget.pengeluaran!.tanggal);
     anggaranid = TextEditingController(
         text: widget.pengeluaran == null
             ? ''
             : widget.pengeluaran!.anggaranid.toString());
-    oldJumlah = int.parse(widget.pengeluaran!.jumlah.toString());
+    oldJumlah = widget.pengeluaran == null
+        ? 0
+        : int.parse(widget.pengeluaran!.jumlah.toString());
     super.initState();
   }
 

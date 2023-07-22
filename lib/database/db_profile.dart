@@ -150,7 +150,6 @@ class DbProfile {
     var dbClient = await _db;
     var result =
         await dbClient!.query(tableName, columns: [columnId, columnName]);
-
     return result.toList();
   }
 

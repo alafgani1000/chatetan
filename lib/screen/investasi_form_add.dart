@@ -1,15 +1,16 @@
 import 'package:chatetan_duit/database/db_profile.dart';
+import 'package:chatetan_duit/model/investasi.dart';
 import 'package:chatetan_duit/model/pemasukan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-class PemasukanFormAdd extends StatefulWidget {
-  const PemasukanFormAdd({Key? key, this.pemasukan}) : super(key: key);
-  final Pemasukan? pemasukan;
+class InvestasiFormAdd extends StatefulWidget {
+  const InvestasiFormAdd({Key? key, this.investasi}) : super(key: key);
+  final Investasi? investasi;
 
   @override
-  State<PemasukanFormAdd> createState() => _PemasukanFormAddState();
+  State<InvestasiFormAdd> createState() => _InvestasiFormAddState();
 }
 
 class CurrencyPtBrInputFormatter extends TextInputFormatter {
@@ -32,33 +33,41 @@ class CurrencyPtBrInputFormatter extends TextInputFormatter {
   }
 }
 
-class _PemasukanFormAddState extends State<PemasukanFormAdd> {
+class _InvestasiFormAddState extends State<InvestasiFormAdd> {
   DbProfile dbProfile = DbProfile();
 
   TextEditingController? deskripsi;
   TextEditingController? jumlah;
   TextEditingController? tanggal;
+  TextEditingController? platfom;
+  TextEditingController? periodebagi;
   String jumlahCurrency = '';
 
   @override
   void initState() {
     // TODO: implement initState
     deskripsi = TextEditingController(
-        text: widget.pemasukan == null ? '' : widget.pemasukan!.deskripsi);
+        text: widget.investasi == null ? '' : widget.investasi!.deskripsi);
     jumlah = TextEditingController(
-        text: widget.pemasukan == null
+        text: widget.investasi == null
             ? ''
-            : widget.pemasukan!.jumlah.toString());
+            : widget.investasi!.jumlah.toString());
     tanggal = TextEditingController(
-        text: widget.pemasukan == null ? '' : widget.pemasukan!.tanggal);
+        text: widget.investasi == null ? '' : widget.investasi!.tanggal);
+    platfom = TextEditingController(
+        text: widget.investasi == null ? '' : widget.investasi!.platfom);
+    periodebagi = TextEditingController(
+        text: widget.investasi == null ? '' : widget.investasi!.periodebagi);
     super.initState();
   }
 
-  Future<void> upsertPemasukan() async {
+  Future<void> upsertInvestasi() async {
     List<String> jumlahList = jumlah!.text.toString().split(",");
     String jumlahString = jumlahList[0].toString().replaceAll(".", "");
-    await dbProfile.savePemasukan(
-      Pemasukan(
+    await dbProfile.saveInvestasi(
+      Investasi(
+        platfom: platfom!.text,
+        periodebagi: periodebagi!.text,
         deskripsi: deskripsi!.text,
         jumlah: int.parse(jumlahString),
         tanggal: tanggal!.text,
@@ -74,13 +83,40 @@ class _PemasukanFormAddState extends State<PemasukanFormAdd> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(183, 6, 141, 150),
-        title: Text('Input Pemasukan'),
+        title: Text('Input Data Investasi'),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Platfom harus di isi';
+                  }
+                  return null;
+                },
+                controller: platfom,
+                decoration: InputDecoration(
+                    labelStyle: const TextStyle(
+                      color: Color.fromARGB(255, 78, 73, 73),
+                    ),
+                    labelText: 'Platfom',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(243, 124, 109, 123),
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                      color: Color.fromARGB(243, 124, 109, 123),
+                    ))),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -152,6 +188,33 @@ class _PemasukanFormAddState extends State<PemasukanFormAdd> {
               child: TextFormField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
+                    return 'Periode bagi harus di isi';
+                  }
+                  return null;
+                },
+                controller: periodebagi,
+                decoration: InputDecoration(
+                    labelStyle: const TextStyle(
+                      color: Color.fromARGB(255, 78, 73, 73),
+                    ),
+                    labelText: 'Periode Bagi',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(243, 124, 109, 123),
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                      color: Color.fromARGB(243, 124, 109, 123),
+                    ))),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
                     return 'Tanggal harus di isi';
                   }
                   return null;
@@ -159,7 +222,7 @@ class _PemasukanFormAddState extends State<PemasukanFormAdd> {
                 controller: tanggal,
                 style: const TextStyle(color: Colors.black),
                 decoration: const InputDecoration(
-                  label: Text('Tanggal'),
+                  label: Text('Tanggal Investasi'),
                   labelStyle: TextStyle(
                     color: Color.fromARGB(255, 78, 73, 73),
                   ),
@@ -186,27 +249,6 @@ class _PemasukanFormAddState extends State<PemasukanFormAdd> {
                     initialDate: DateTime.now(),
                     firstDate: DateTime(200),
                     lastDate: DateTime(2101),
-                    builder: (context, child) {
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
-                            primary: Color.fromARGB(
-                                255, 10, 175, 134), // header background color
-                            onPrimary: Color.fromARGB(
-                                255, 251, 250, 250), // header text color
-                            onSurface:
-                                Color.fromARGB(255, 8, 8, 8), // body text color
-                          ),
-                          textButtonTheme: TextButtonThemeData(
-                            style: TextButton.styleFrom(
-                              primary: Color.fromARGB(
-                                  255, 21, 5, 4), // button text color
-                            ),
-                          ),
-                        ),
-                        child: child!,
-                      );
-                    },
                   );
                   if (pickedDate != null) {
                     String formatDate =
@@ -227,7 +269,7 @@ class _PemasukanFormAddState extends State<PemasukanFormAdd> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    upsertPemasukan();
+                    upsertInvestasi();
                   }
                 },
                 child: const Text(

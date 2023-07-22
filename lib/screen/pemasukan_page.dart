@@ -3,15 +3,10 @@ import 'dart:ffi';
 import 'package:chatetan_duit/database/db_profile.dart';
 import 'package:chatetan_duit/model/pemasukan.dart';
 import 'package:chatetan_duit/model/profil.dart';
-import 'package:chatetan_duit/screen/jurnal_form.dart';
-import 'package:chatetan_duit/screen/jurnal_form_edit.dart';
 import 'package:chatetan_duit/screen/pemasukan_form_add.dart';
 import 'package:chatetan_duit/screen/pemasukan_form_edit.dart';
-import 'package:chatetan_duit/screen/profil_form.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../model/jurnal.dart';
 
 class PemasukanPage extends StatefulWidget {
   const PemasukanPage({Key? key, required this.title}) : super(key: key);
@@ -77,13 +72,13 @@ class _PemasukanPageState extends State<PemasukanPage> {
     var delete = await dbProfile.deletePemasukan(id);
   }
 
-  Future<void> _openFormEdit(jurnal) async {
+  Future<void> _openFormEdit(pemasukan) async {
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
           return PemasukanFormEdit(
-            pemasukan: jurnal,
+            pemasukan: pemasukan,
           );
         },
       ),

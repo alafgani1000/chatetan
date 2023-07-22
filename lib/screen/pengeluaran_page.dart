@@ -93,7 +93,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
     var delete = await dbProfile.deleteJurnal(id);
   }
 
-  Future<void> _openFormEdit(jurnal) async {
+  Future<void> _openFormEdit(pengeluaran) async {
     var list = await dbProfile.getAnggaran();
     setState(() {
       anggaranData.clear();
@@ -107,6 +107,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
         builder: (BuildContext context) {
           return PengeluaranFormEdit(
             anggaran: anggaranData[0],
+            pengeluaran: pengeluaran,
           );
         },
       ),

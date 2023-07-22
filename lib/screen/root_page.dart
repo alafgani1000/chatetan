@@ -1,4 +1,5 @@
 import 'package:chatetan_duit/screen/anggaran_page.dart';
+import 'package:chatetan_duit/screen/investasi_page.dart';
 import 'package:chatetan_duit/screen/jurnal_data.dart';
 import 'package:chatetan_duit/screen/pemasukan_page.dart';
 import 'package:chatetan_duit/screen/pengeluaran_page.dart';
@@ -19,7 +20,7 @@ class _RootPageState extends State<RootPage> {
     PemasukanPage(title: 'Pemasukan'),
     PengeluaranPage(title: 'Pengeluaran'),
     AnggaranPage(title: 'Anggaran'),
-    JurnalData(title: 'Jurnal'),
+    InvestasiPage(title: 'Investasi'),
   ];
   @override
   Widget build(BuildContext context) {
@@ -69,17 +70,16 @@ class _RootPageState extends State<RootPage> {
             ),
             NavigationDestination(
               icon: Icon(
-                Icons.receipt,
+                Icons.currency_exchange,
                 size: 20,
               ),
-              label: 'Laporan',
+              label: 'Investasi',
             ),
           ],
           onDestinationSelected: (int index) {
             setState(() {
               currentPage = index;
             });
-            debugPrint(index.toString());
           },
           selectedIndex: currentPage,
         ),
