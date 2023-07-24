@@ -61,7 +61,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
   Future<void> _getDataSummary() async {
     var idAnggaran = await dbProfile.getIdAnggaran();
     if (idAnggaran != null) {
-      var list = await dbProfile.getTotalPengeluaran(idAnggaran);
+      var list = await dbProfile.getTotalPengeluaranPerbulan(idAnggaran);
       setState(() {
         summaryData = list;
       });

@@ -58,6 +58,11 @@ class DbProfile {
   final String columnInvestPeriodeBagi = 'periodebagi';
   final String columnInvestTanggal = 'tanggal';
   final String columnInvestDeskripsi = 'deskripsi';
+  // table utang
+  final String tableNameUtang = 'tableUtang';
+  final String columnUtangDeskripsi = 'deskripsi';
+  final String columnUtangJumlah = 'jumlah';
+  final String columnUtangJatuhTempo = 'jatuhtempo';
 
   DbProfile._internal();
   factory DbProfile() => _instance;
@@ -130,6 +135,12 @@ class DbProfile {
         "$columnInvestDeskripsi TEXT,"
         "$columnInvestTanggal DATE)";
 
+    var sqlUtang = "CREATE TABLE $tableNameUtang($columnId INTEGER PRIMARY KEY,"
+        "$columnUtangDeskripsi TEXT,"
+        "$columnUtangJumlah INTEGER,"
+        "$columnUtangJatuhTempo DATE"
+        ")";
+
     await db.execute(sqlJurnal);
     await db.execute(sql);
     await db.execute(sqlAnggaran);
@@ -137,6 +148,7 @@ class DbProfile {
     await db.execute(sqlPemasukan);
     await db.execute(sqlPengeluaran);
     await db.execute(sqlInvestasi);
+    await db.execute(sqlUtang);
   }
 
   //insert ke databse
@@ -336,11 +348,19 @@ class DbProfile {
     return total;
   }
 
-  Future<dynamic> getTotalPengeluaran(int idAnggaran) async {
+  Future<dynamic> getTotalPengeluaranPerbulan(int idAnggaran) async {
     var dbClient = await _db;
     var total = Sqflite.firstIntValue(await dbClient!.rawQuery(
         'SELECT SUM(jumlah) as total FROM $tableNamePengeluaran WHERE $columnAnggaranId = ?',
         [idAnggaran]));
+    total ??= 0;
+    return total;
+  }
+
+  Future<dynamic> getTotalPengeluaran() async {
+    var dbClient = await _db;
+    var total = Sqflite.firstIntValue(await dbClient!
+        .rawQuery('SELECT SUM(jumlah) as total FROM $tableNamePengeluaran'));
     total ??= 0;
     return total;
   }

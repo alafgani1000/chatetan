@@ -20,7 +20,7 @@ class _RootPageState extends State<RootPage> {
     PemasukanPage(title: 'Pemasukan'),
     PengeluaranPage(title: 'Pengeluaran'),
     AnggaranPage(title: 'Anggaran'),
-    InvestasiPage(title: 'Investasi'),
+    // InvestasiPage(title: 'Investasi'),
   ];
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _RootPageState extends State<RootPage> {
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
             labelTextStyle: MaterialStateProperty.all(
-              TextStyle(
+              const TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 11.0,
                 fontWeight: FontWeight.bold,
@@ -68,13 +68,13 @@ class _RootPageState extends State<RootPage> {
               ),
               label: 'Anggaran',
             ),
-            NavigationDestination(
-              icon: Icon(
-                Icons.currency_exchange,
-                size: 20,
-              ),
-              label: 'Investasi',
-            ),
+            // NavigationDestination(
+            //   icon: Icon(
+            //     Icons.currency_exchange,
+            //     size: 20,
+            //   ),
+            //   label: 'Investasi',
+            // ),
           ],
           onDestinationSelected: (int index) {
             setState(() {

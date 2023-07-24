@@ -58,6 +58,18 @@ class _ProfileFormState extends State<ProfileForm> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              height: 200,
+              width: 200,
+              margin: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.transparent,
+                image: const DecorationImage(
+                  image: AssetImage('asset/image/logo.png'),
+                ),
+              ),
+            ),
             TextField(
               controller: name,
               decoration: InputDecoration(
