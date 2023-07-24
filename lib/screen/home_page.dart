@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   int jumlahPemakaian = 0;
   int totalPengeluaran = 0;
   int totalPemasukan = 0;
+  int totalInvestasi = 0;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     var jumPakai = await dbProfile.getCurrAnggJump();
     var totalPem = await dbProfile.getTotalPemasukan();
     var totalPeng = await dbProfile.getTotalPengeluaran();
+    var totalInv = await dbProfile.getTotalInvestasi();
     setState(() {
       profile.clear();
       list!.forEach((profil) {
@@ -45,6 +47,7 @@ class _HomePageState extends State<HomePage> {
       jumlahPemakaian = jumPakai ?? 0;
       totalPemasukan = totalPem ?? 0;
       totalPengeluaran = totalPeng ?? 0;
+      totalInvestasi = totalInv ?? 0;
       isLoaded = false;
     });
   }
@@ -194,13 +197,6 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                           decoration: const BoxDecoration(
                             color: Colors.white,
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.black,
-                                width: 2.0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(5),
                               topRight: Radius.circular(5),
@@ -234,39 +230,73 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SliverToBoxAdapter(
                       child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(5),
-                              bottomRight: Radius.circular(5),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        margin: const EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          bottom: 0,
+                          top: 0,
+                        ),
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            WeightText(content: 'Total Pengeluaran'),
+                            const SizedBox(
+                              height: 5,
                             ),
+                            Text(NumberFormat.currency(
+                              locale: 'id',
+                              symbol: 'Rp ',
+                            ).format(totalPengeluaran))
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5),
                           ),
-                          margin: const EdgeInsets.only(
-                            left: 20,
-                            right: 20,
-                            bottom: 15,
-                            top: 0,
-                          ),
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            left: 10,
-                            right: 10,
-                            bottom: 10,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              WeightText(content: 'Total Pengeluaran'),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(NumberFormat.currency(
-                                locale: 'id',
-                                symbol: 'Rp ',
-                              ).format(totalPengeluaran))
-                            ],
-                          )),
+                        ),
+                        margin: const EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          bottom: 15,
+                          top: 0,
+                        ),
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            WeightText(content: 'Total Investasi'),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(NumberFormat.currency(
+                              locale: 'id',
+                              symbol: 'Rp ',
+                            ).format(totalInvestasi))
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

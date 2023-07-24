@@ -340,6 +340,14 @@ class DbProfile {
     return result.toList();
   }
 
+  Future<dynamic> getTotalInvestasi() async {
+    var dbClient = await _db;
+    var total = Sqflite.firstIntValue(await dbClient!
+        .rawQuery('SELECT SUM(jumlah) as total FROM $tableNameInvestasi'));
+    total ??= 0;
+    return total;
+  }
+
   Future<dynamic> getTotalPemasukan() async {
     var dbClient = await _db;
     var total = Sqflite.firstIntValue(await dbClient!

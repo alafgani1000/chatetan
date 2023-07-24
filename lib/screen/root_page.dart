@@ -31,40 +31,40 @@ class _RootPageState extends State<RootPage> {
             labelTextStyle: MaterialStateProperty.all(
               const TextStyle(
                 fontFamily: 'Roboto',
-                fontSize: 11.0,
+                fontSize: 12.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
             backgroundColor: Colors.white),
         child: NavigationBar(
           backgroundColor: Colors.white,
-          height: 60,
+          height: 65,
           destinations: const [
             NavigationDestination(
               icon: Icon(
                 Icons.home,
-                size: 20,
+                size: 25,
               ),
               label: 'Home',
             ),
             NavigationDestination(
               icon: Icon(
                 Icons.book,
-                size: 20,
+                size: 25,
               ),
               label: 'Pemasukan',
             ),
             NavigationDestination(
               icon: Icon(
                 Icons.app_shortcut,
-                size: 20,
+                size: 25,
               ),
               label: 'Pengeluaran',
             ),
             NavigationDestination(
               icon: Icon(
                 Icons.assignment,
-                size: 20,
+                size: 25,
               ),
               label: 'Anggaran',
             ),

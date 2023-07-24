@@ -47,17 +47,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Chatetan',
       home: isLoad == true
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : name != null
-              ? RootPage()
+              ? const RootPage()
               : const ProfileForm(),
       theme: ThemeData(
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Color.fromARGB(183, 7, 126, 142),
         ),
       ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
