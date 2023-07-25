@@ -11,7 +11,7 @@ class header extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: 140,
       padding: const EdgeInsets.only(
-        top: 50,
+        top: 58,
         left: 20,
         bottom: 0,
         right: 20,

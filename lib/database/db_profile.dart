@@ -6,6 +6,7 @@ import 'package:chatetan_duit/model/pemasukan.dart';
 import 'package:chatetan_duit/model/pengeluaran.dart';
 import 'package:chatetan_duit/model/profil.dart';
 import 'package:chatetan_duit/model/tagihan.dart';
+import 'package:chatetan_duit/model/utang.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart';
@@ -201,6 +202,12 @@ class DbProfile {
     return await dbClient!.insert(tableNameInvestasi, investasi.toMap());
   }
 
+  // save investasi
+  Future<int?> saveUtang(Utang utang) async {
+    var dbClient = await _db;
+    return await dbClient!.insert(tableNameUtang, utang.toMap());
+  }
+
   // get data jurnal
   Future<List?> getAllJurnal() async {
     var dbClient = await _db;
@@ -340,6 +347,26 @@ class DbProfile {
     return result.toList();
   }
 
+  // get data utang
+  Future<List?> getUtang() async {
+    var dbClient = await _db;
+    var result = await dbClient!.query(tableNameUtang, columns: [
+      columnId,
+      columnUtangDeskripsi,
+      columnUtangJumlah,
+      columnUtangJatuhTempo,
+    ]);
+    return result.toList();
+  }
+
+  Future<dynamic> getTotalUtang() async {
+    var dbClient = await _db;
+    var total = Sqflite.firstIntValue(await dbClient!
+        .rawQuery('SELECT SUM(jumlah) as total FROM $tableNameUtang'));
+    total ??= 0;
+    return total;
+  }
+
   Future<dynamic> getTotalInvestasi() async {
     var dbClient = await _db;
     var total = Sqflite.firstIntValue(await dbClient!
@@ -455,6 +482,17 @@ class DbProfile {
     );
   }
 
+  // update data utang
+  Future<int?> updateUtang(Utang utang) async {
+    var dbClient = await _db;
+    return await dbClient!.update(
+      tableNameUtang,
+      utang.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [utang.id],
+    );
+  }
+
   // delete data
   // delete data jurnal
   Future<int?> deleteJurnal(int id) async {
@@ -496,5 +534,12 @@ class DbProfile {
     var dbClient = await _db;
     return await dbClient!
         .delete(tableNameInvestasi, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // delete data utang
+  Future<int?> deleteUtang(int id) async {
+    var dbClient = await _db;
+    return await dbClient!
+        .delete(tableNameUtang, where: '$columnId = ?', whereArgs: [id]);
   }
 }

@@ -2,13 +2,13 @@ class Utang {
   int? id;
   String? deskripsi;
   int? jumlah;
-  String? tanggal;
+  String? jatuhtempo;
 
   Utang({
     this.id,
     this.deskripsi,
     this.jumlah,
-    this.tanggal,
+    this.jatuhtempo,
   });
 
   Map<String, dynamic> toMap() {
@@ -18,7 +18,7 @@ class Utang {
     }
     map['deskripsi'] = deskripsi;
     map['jumlah'] = jumlah;
-    map['tanggal'] = tanggal;
+    map['jatuhtempo'] = jatuhtempo;
     return map;
   }
 
@@ -26,6 +26,6 @@ class Utang {
     this.id = map['id'];
     this.deskripsi = map['deskripsi'];
     this.jumlah = map['jumlah'];
-    this.tanggal = map['tanggal'];
+    this.jatuhtempo = map['jatuhtempo'];
   }
 }

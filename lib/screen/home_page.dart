@@ -1,6 +1,7 @@
 import 'package:chatetan_duit/database/db_profile.dart';
 import 'package:chatetan_duit/model/profil.dart';
 import 'package:chatetan_duit/screen/investasi_page.dart';
+import 'package:chatetan_duit/screen/utang_page.dart';
 import 'package:chatetan_duit/widgets/announcement.dart';
 import 'package:chatetan_duit/widgets/header.dart';
 import 'package:chatetan_duit/widgets/weight_text.dart';
@@ -123,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                                     Icons.currency_exchange,
                                     size: 35,
                                   ),
-                                  Text('Investasi')
+                                  Text('Utang')
                                 ],
                               ),
                             ),
@@ -133,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext contex) {
-                                    return const InvestasiPage(
+                                    return const UtangPage(
                                       title: 'Investasi',
                                     );
                                   },
